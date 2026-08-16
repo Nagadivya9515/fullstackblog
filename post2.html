@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REST APIs Explained — The Pipes That Carry Your Whole App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f7fa;--paper:#fff;--ink:#0f313d;--ink-soft:#4a6774;--line:#d8e6ed;
+    --water:#2f8fc4;--water-deep:#1c6a97;--water-soft:#e2f0f9;--sun:#f2a23c;--sun-soft:#fbe6c4;
+    --coral:#d3574c;--green:#2f9e6f;--shadow:0 2px 4px rgba(15,49,61,.05),0 8px 24px rgba(15,49,61,.06)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif;
+    line-height:1.62;font-size:17px;-webkit-font-smoothing:antialiased;padding:0 0 80px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 18px}
+  a{color:var(--water-deep)}
+  .mast{text-align:center;padding:54px 18px 20px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-family:'Poppins';font-weight:600;
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--water-deep);
+    background:var(--water-soft);border-radius:999px;padding:6px 14px;margin-bottom:18px}
+  h1{font-family:'Poppins';font-weight:700;line-height:1.12;letter-spacing:-.02em;
+    font-size:clamp(1.9rem,6vw,2.7rem);max-width:18ch;margin:0 auto}
+  h1 .flow{color:var(--water)}
+  .dek{color:var(--ink-soft);max-width:54ch;margin:16px auto 0;font-size:1.05rem}
+  .backlink{text-align:center;font-size:.9rem;color:var(--ink-soft);margin:8px 0 0}
+  article p{margin:0 0 16px}
+  .lead{font-size:1.05rem}
+  .h2wrap{margin:46px 0 14px}
+  h2{font-family:'Poppins';font-weight:600;letter-spacing:-.01em;font-size:1.5rem;line-height:1.2;margin:0;display:flex;align-items:center;gap:12px}
+  h2 .ic{font-size:1.5rem;line-height:1}
+  h2 .sub{display:block;font-family:'Work Sans';font-weight:500;font-size:.95rem;color:var(--water-deep)}
+  h3{font-family:'Poppins';font-weight:600;font-size:1.12rem;margin:28px 0 8px;display:flex;align-items:center;gap:9px}
+  .note{color:var(--ink-soft);font-style:italic;border-left:3px solid var(--sun);padding-left:14px;margin:14px 0 4px}
+  figure{margin:22px 0 6px}
+  .art{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+  .illus{width:100%;height:auto;display:block;border-radius:12px}
+  .illus.pending{display:flex;align-items:center;justify-content:center;text-align:center;min-height:200px;
+    background:repeating-linear-gradient(45deg,#eef4f8,#eef4f8 12px,#e6eef4 12px,#e6eef4 24px);
+    color:var(--water-deep);font-family:Poppins;font-weight:600;border:1px dashed #b9d2e0;border-radius:12px}
+  .illus.pending small{color:var(--ink-soft);font-weight:500}
+  figcaption{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:12px;font-family:'Poppins';font-weight:500}
+  .pointers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 6px}
+  @media(max-width:560px){.pointers{grid-template-columns:1fr}}
+  .pcard{border:1px solid var(--line);border-radius:14px;padding:15px 16px;background:var(--paper)}
+  .pcard.no{background:#fdf5f4;border-color:#f2d7d4}
+  .pcard.yes{background:#f1faf5;border-color:#d0ecdd}
+  .pcard h4{font-family:'Poppins';font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);margin-bottom:11px}
+  .pcard ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .pcard li{display:flex;gap:10px;align-items:flex-start;font-size:.96rem;line-height:1.45}
+  .mk{flex:none;width:1.15em;margin-top:.1em;font-weight:700;text-align:center}
+  .no .mk{color:var(--coral)}.yes .mk{color:var(--green)}
+  .jobs{list-style:none;display:flex;flex-direction:column;gap:10px;margin:16px 0 6px}
+  .jobs li{display:flex;gap:12px;align-items:flex-start;font-size:.98rem}
+  .jobs .b{flex:none;font-size:1.15rem;line-height:1.3}
+  .jobs strong{font-family:'Poppins';font-weight:600}
+  /* data table (methods + map) */
+  .dtable{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:18px 0 6px;background:var(--paper)}
+  .drow{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);font-size:.95rem}
+  .drow:last-child{border-bottom:none}
+  .drow .em{font-size:1.15rem}
+  .drow .act{color:var(--ink)}
+  .drow .verb{font-family:'Poppins';font-weight:700;color:var(--water-deep);font-size:.85rem;background:var(--water-soft);padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .drow .mean{color:var(--ink-soft);font-size:.86rem;text-align:right}
+  @media(max-width:560px){.drow{grid-template-columns:auto 1fr auto}.drow .mean{display:none}}
+  /* status codes */
+  .codes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+  @media(max-width:560px){.codes{grid-template-columns:1fr}}
+  .code{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--paper)}
+  .code .num{font-family:'Poppins';font-weight:700;font-size:1rem;padding:4px 8px;border-radius:8px;flex:none}
+  .code .txt{font-size:.9rem;line-height:1.35}
+  .c2 .num{background:#e7f6ee;color:var(--green)}
+  .c4 .num{background:#fdeee5;color:#c07d22}
+  .c5 .num{background:#fbeceb;color:var(--coral)}
+  ol.flowlist{list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:11px;margin:16px 0 6px}
+  ol.flowlist li{position:relative;padding-left:44px;counter-increment:step;font-size:.98rem;min-height:30px;display:flex;align-items:center}
+  ol.flowlist li::before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--water);color:#fff;font-family:'Poppins';font-weight:600;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+  ol.flowlist strong{font-family:'Poppins';font-weight:600}
+  .divider{border:none;border-top:1px solid var(--line);margin:40px 0}
+  .next{background:var(--water-soft);border-radius:16px;padding:20px 22px;margin-top:36px;font-size:1rem}
+  .next strong{font-family:'Poppins';font-weight:600;color:var(--water-deep)}
+</style>
+</head>
+<body>
+  <header class="mast">
+    <span class="kicker">🚰 Full-Stack, explained simply · Post 2</span>
+    <h1>REST APIs Explained — <span class="flow">The Pipes</span> That Carry Your Whole App</h1>
+    <p class="dek">In Post 1 we built the city. Today we crawl inside the pipes — the part every app depends on and nobody ever sees.</p>
+    <p class="backlink">New here? Start with <a href="index.html">Post 1 — the whole city</a>.</p>
+  </header>
+
+  <div class="wrap"><article>
+
+    <p class="lead">In our city, the plant does the thinking and the tap is the part you touch — but nothing reaches you without the pipes. Pipes are how water travels: fixed routes, agreed jobs, no surprises.</p>
+    <p>That network of pipes is your <strong>REST API</strong>. Every app you use runs on one. Let's crawl inside.</p>
+
+    <!-- V1 HERO -->
+    <figure><div class="art"><img class="illus" src="images/01-hero.jpg" alt="The pipe network from plant to houses"></div>
+      <figcaption>The whole API — a network of pipes, each with one job.</figcaption></figure>
+
+    <!-- ===== METHODS ===== -->
+    <div class="h2wrap"><h2><span class="ic">🔧</span> Every Pipe Has One Job<span class="sub">the four main pipes</span></h2></div>
+    <p>Walk the pipe network and you'll notice something: no pipe does two things. Each has a single, fixed job. Learn the four main pipes and you know most of what an API does.</p>
+
+    <div class="dtable">
+      <div class="drow"><span class="em">💧</span><span class="act">Send water out — you're just <em>reading</em> what's already there</span><span class="verb">GET</span><span class="mean">read</span></div>
+      <div class="drow"><span class="em">🪣</span><span class="act">Pour new water in — you're <em>adding</em> something new</span><span class="verb">POST</span><span class="mean">create</span></div>
+      <div class="drow"><span class="em">🔁</span><span class="act">Swap the tank's water — you're <em>replacing</em> what's there</span><span class="verb">PUT</span><span class="mean">update</span></div>
+      <div class="drow"><span class="em">🚿</span><span class="act">Drain and shut — you're <em>removing</em> it</span><span class="verb">DELETE</span><span class="mean">delete</span></div>
+    </div>
+    <p class="note">Four pipes: read, add, replace, remove. That's the whole grammar of an API.</p>
+
+    <!-- V2 METHODS -->
+    <figure><div class="art"><img class="illus" src="images/02-methods.jpg" alt="Four pipes labelled GET, POST, PUT, DELETE"></div>
+      <figcaption>Four labelled pipes, four jobs, water flowing the right way.</figcaption></figure>
+
+    <!-- ===== ADDRESS ===== -->
+    <div class="h2wrap"><h2><span class="ic">🏠</span> Every Pipe Has an Address<span class="sub">where the water goes</span></h2></div>
+    <p>A pipe is useless if it doesn't know which house it serves. So every pipe carries an <em>address</em> — the exact door it runs to.</p>
+    <ul class="jobs">
+      <li><span class="b">🏘️</span><span><code>/users</code>&nbsp;— the pipe to <strong>every house</strong> on the street</span></li>
+      <li><span class="b">🏠</span><span><code>/users/1</code>&nbsp;— the pipe to <strong>house number 1</strong></span></li>
+    </ul>
+    <p class="note">That address is the <strong>endpoint</strong>. The plant reads it to know exactly where to send the water.</p>
+
+    <!-- V3 ADDRESS -->
+    <figure><div class="art"><img class="illus" src="images/03-address.jpg" alt="A pipe labelled /users/1 running to house number 1"></div>
+      <figcaption>The address on the pipe = the endpoint the request runs to.</figcaption></figure>
+
+    <!-- ===== CONTRACT ===== -->
+    <div class="h2wrap"><h2><span class="ic">🤝</span> Why Every Pipe Must Be Predictable<span class="sub">the contract</span></h2></div>
+    <p>The whole city works because a pipe keeps a promise: turn <em>this</em> valve, get <em>this</em> result — the same way, every time.</p>
+
+    <div class="pointers">
+      <div class="pcard yes"><h4>A good pipe</h4><ul>
+        <li><span class="mk">✓</span> Same valve → same result, every time</li>
+        <li><span class="mk">✓</span> Clearly labelled, no guessing</li>
+        <li><span class="mk">✓</span> Anyone can use it without asking you</li></ul></div>
+      <div class="pcard no"><h4>A bad pipe</h4><ul>
+        <li><span class="mk">✕</span> Does something different each time</li>
+        <li><span class="mk">✕</span> Unlabelled — you have to guess</li>
+        <li><span class="mk">✕</span> Breaks whatever's plugged into it</li></ul></div>
+    </div>
+    <p class="note">This promise is the <strong>contract</strong>. It's why the frontend team and the backend team can build separately and still fit together perfectly.</p>
+
+    <!-- ===== BODY + HEADERS ===== -->
+    <div class="h2wrap"><h2><span class="ic">📦</span> What You Send Down the Pipe<span class="sub">the water and its label</span></h2></div>
+    <p>Reading is easy — you just open the tap. But <em>adding</em> water (POST) or <em>replacing</em> it (PUT) means you have to send something down the pipe. Two things travel together:</p>
+
+    <div class="pointers">
+      <div class="pcard"><h4>💧 The water</h4><ul>
+        <li>The actual stuff you're sending — a new user, an order, a message.</li>
+        <li>This is the <strong>request body</strong>.</li></ul></div>
+      <div class="pcard"><h4>🏷️ The label tag</h4><ul>
+        <li>Notes taped to the pipe: what kind of water, who sent it, what format.</li>
+        <li>These are the <strong>headers</strong>.</li></ul></div>
+    </div>
+    <p class="note">One header matters most: the key that proves you're allowed to send water at all. That's the valve — and it's the whole of Post 3.</p>
+
+    <!-- V4 BODY -->
+    <figure><div class="art"><img class="illus" src="images/04-body.jpg" alt="A water parcel labelled BODY with a HEADERS tag entering a pipe"></div>
+      <figcaption>POST: you send the water (body) with a label (headers).</figcaption></figure>
+
+    <!-- ===== STATUS CODES ===== -->
+    <div class="h2wrap"><h2><span class="ic">📟</span> Reading the Pressure Gauge<span class="sub">status codes</span></h2></div>
+    <p>Every time you turn a valve, a gauge tells you what happened — you never have to walk to the plant. The number says it all.</p>
+
+    <div class="codes">
+      <div class="code c2"><span class="num">200</span><span class="txt">Water's flowing — all good <em>(OK)</em></span></div>
+      <div class="code c2"><span class="num">201</span><span class="txt">New tank built and filled <em>(Created)</em></span></div>
+      <div class="code c4"><span class="num">400</span><span class="txt">You sent bad water <em>(Bad Request)</em></span></div>
+      <div class="code c4"><span class="num">401</span><span class="txt">Valve's locked — show your key <em>(Unauthorized)</em></span></div>
+      <div class="code c4"><span class="num">404</span><span class="txt">No pipe at that address <em>(Not Found)</em></span></div>
+      <div class="code c5"><span class="num">500</span><span class="txt">The plant broke — not your fault <em>(Server Error)</em></span></div>
+    </div>
+    <p class="note">The first digit tells the whole story: <strong>2</strong> = it worked, <strong>4</strong> = you messed up, <strong>5</strong> = the plant messed up.</p>
+
+    <!-- V5 GAUGE -->
+    <figure><div class="art"><img class="illus" src="images/05-gauge.jpg" alt="Three pressure gauges reading 200, 404, 500"></div>
+      <figcaption>The gauge answers instantly — worked, your fault, or its fault.</figcaption></figure>
+
+    <!-- ===== JOURNEY ===== -->
+    <div class="h2wrap"><h2><span class="ic">💧</span> Follow One Request<span class="sub">a read, end to end</span></h2></div>
+    <p>You open an app and it shows your profile. Behind that is one trip down a pipe:</p>
+    <ol class="flowlist">
+      <li><strong>You turn the read-valve</strong>&nbsp;— <code>GET /users/me</code></li>
+      <li><strong>The address routes it</strong>&nbsp;— down the pipe to your house</li>
+      <li><strong>The valve checks your key</strong>&nbsp;— you're allowed</li>
+      <li><strong>The plant fills the pipe</strong>&nbsp;— it reads your details</li>
+      <li><strong>The gauge reads 200</strong>&nbsp;— success</li>
+      <li><strong>Water reaches your glass</strong>&nbsp;— your profile appears</li>
+    </ol>
+    <p class="note">Every button you click is one of these — read, add, replace, remove — over and over, thousands of times a second.</p>
+
+    <!-- V6 JOURNEY -->
+    <figure><div class="art"><img class="illus" src="images/06-journey.jpg" alt="One request travelling a pipe past valve, address, plant, glass"></div>
+      <figcaption>GET /users/me — one request, start to finish.</figcaption></figure>
+
+    <hr class="divider">
+
+    <!-- ===== MAP ===== -->
+    <div class="h2wrap"><h2><span class="ic">🗺️</span> The One-Line Map<span class="sub">now, the real names</span></h2></div>
+    <p>The pipe network one more time — with the actual REST term for each part. Keep it next to you and APIs stop being scary:</p>
+
+    <div class="dtable">
+      <div class="drow"><span class="em">🚰</span><span class="act">A pipe</span><span class="verb">Endpoint</span><span class="mean">a route into your app</span></div>
+      <div class="drow"><span class="em">🔧</span><span class="act">The pipe's job</span><span class="verb">HTTP Method</span><span class="mean">GET / POST / PUT / DELETE</span></div>
+      <div class="drow"><span class="em">🏠</span><span class="act">The address</span><span class="verb">Path</span><span class="mean">/users/1</span></div>
+      <div class="drow"><span class="em">💧</span><span class="act">Water you send</span><span class="verb">Request body</span><span class="mean">the data</span></div>
+      <div class="drow"><span class="em">🏷️</span><span class="act">The label tag</span><span class="verb">Headers</span><span class="mean">type, auth, format</span></div>
+      <div class="drow"><span class="em">📟</span><span class="act">The pressure gauge</span><span class="verb">Status code</span><span class="mean">200 / 404 / 500</span></div>
+    </div>
+
+    <!-- V7 MAP -->
+    <figure><div class="art"><img class="illus" src="images/07-map.jpg" alt="Full labelled pipe system: endpoint, method, path, body, headers, status"></div>
+      <figcaption>Save this one — the whole REST vocabulary on a single pipe.</figcaption></figure>
+
+    <div class="next"><strong>Next post →</strong> we reach the <em>valves</em> — how the plant decides who's allowed to get water at all. That's login, tokens, and JWT, still inside the city.</div>
+
+    <p class="backlink" style="margin-top:28px">← Back to <a href="index.html">Post 1 — the whole city</a></p>
+
+  </article></div>
+</body>
+</html>
